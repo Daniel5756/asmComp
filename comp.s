@@ -10,13 +10,21 @@ myCall: .asciz "call "
 myPush:	.asciz "push "
 fullData:	.zero 100
 fullDataPtr:	.long 0
-startData: 	.asciz: ".data \n mem: .zero 1024 \n mallocPtr: .long 0 \n"
+startData: 	.asciz ".data \n mem: .zero 1024 \n mallocPtr: .long 0 \n"
 
 
 	.text
 	.globl	_start
 	.type	_start, @function
 _start:
+	push $'g'
+	push $test
+	push $'10'
+	call chrInStr
+	
+	
+	
+	
 	mov $fullData, fullDataPtr
 	push $rawIn
 	push $1024
@@ -51,19 +59,13 @@ _start:
 			oParLoop:
 				#count len before current index until a special character or a space: so abcd( results in -4 because a is at -4
 ###PICK UP LEFT OFF HERE MAKE THIS FUNCTION ABOVE FOR PRINTING GAHHHHHH (AS A FUNCTION)
+##########while ((rax) ! in "(){}[];") {
+##########	rax++
+##########	if (rax) != ' ': count ++
+##########return count
 ##########
-##########
-##########
-##########
-##########
-##########
-##########
-##########
-##########
-##########
-##########
-##########
-##########
+
+
 				
 				
 				
@@ -99,7 +101,7 @@ _start:
 			je mult
 			cmpb $'/', -1(%rax)
 			je divd
-			jmp lexerror
+			#jmp lexerror
 			
 			eqls:		#set var, return none	(x = y);
 				
@@ -127,6 +129,80 @@ _start:
 jmp exit
 
 ###FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
+printInt:		#PRINTS AN INT
+	pop %rax
+	pop %rbx
+	push %rax
+	push $rbx
+	mov $1000000000, %r9
+	printIntLoop:
+		mov $0, %rdx		#0:%rax
+		mov $10, %rbx		#divide by 10
+		mov %r9, %rax		#divide %r9
+		div %rbx		#divide %r9/10
+		mov %rax, %r9		#put result in %r9
+
+		pop %rax		#pop num
+		mov $0, %rdx		#0:%rax
+		div %r9			#
+		
+		push %rdx
+		
+
+		push %r8
+		#PRINT
+
+		add $digs, %rax
+		push %rax
+		push $1
+		call print
+
+		#END of loop
+		pop %r8
+
+
+		cmp $1, %r9
+		jg printIntLoop
+	
+	#push %r8
+	ret
+
+
+chrInStr:
+	#pop %r8			#return addr
+
+	#pop %rcx	#24	#str len
+	#pop %rbx	#16	#str ptr
+	#pop %rax	#8	#chr lirteral
+
+	mov 24(%rsp), %rcx
+	mov 16(%rsp), %rbx
+	mov 8(%rsp), %rax
+	
+	mov $0, %rdx		#starts as 0
+	mov $1, %r11		#r11 is = 1 always
+
+	mov $0, %r9
+	#dec %rcx
+	dec %rbx
+	#dec %r9
+	chrInStrLoop:
+		dec %rcx
+		cmpb %al, (%rbx)		#compare chrs
+			cmove %rcx, %r9		#satisfy jmp condition
+			cmove %r11, %rdx	#make rdx=1
+		inc %rcx
+		inc %rbx
+		inc %r9
+		cmp %rcx, %r9			#check jump condition
+			#inc %rbx		#increase ptr
+			#inc %r9		#i++
+			jne chrInStrLoop	#jump
+	push %rdx
+	#push %r8
+	ret $3
+
+
 
 print:
 	mov 16(%rsp), %rsi
