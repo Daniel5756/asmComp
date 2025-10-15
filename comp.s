@@ -40,31 +40,7 @@ _start:
 	
 	mov $rawIn, %rax
 	#for character:
-	.mainLoop:
-		
-		mov (%rax), %bl
-		cmpb $'(', %bl
-		je oPar
-		cmpb $')', %bl
-		je cPar
-		cmpb $'[', %bl
-		je oBrk
-		cmpb $']', %bl
-		je cBrk
-		cmpb $'{', %bl
-		je oCrl
-		cmpb $'}', %bl
-		je cCrl
-		cmpb $';', %bl
-		je sCln
-
-		oPar:		#if oPar then check if space before it. if is then 
-			cmpb $' ', -1(%rax)
-			je specialF
-			#REG CASE (PRINT CALL FUNCTION)
-			#PRINT CALL AND THE FUNCTION
-			oParLoop:
-				#use paper notes
+	.mainLoop:				#use paper notes
 ###PICK UP LEFT OFF HERE MAKE THIS FUNCTION ABOVE FOR PRINTING GAHHHHHH (AS A FUNCTION)
 ##########compile of "(a = f(b(c), d(e));
 #go down %rsp
@@ -74,91 +50,16 @@ _start:
 ##########x=function start
 ##########w=line start
 ##########[a] = ptr to c
-#c
-#x
-#[c]
-#b
-################need a way to tell where the function entrance is
-#e
-#x
-#[e]
-#d
-
-#x
-#[b]
-#[d]
-#f
-
-#a
-#x
-
-#[f]
-#[a]
-#=
-
-#w
+#push e
+#call d
+#push c
+#call b
+#call f
+#push a
+#call =
 
 
 
-#general exec of stack: returns to %rax
-#runloop:
-#pop %rbx
-#push %rax
-#mov $0, %rax
-#jmp %rbx	#functions return to runloop
-
-
-			jmp continue
-		cPar:		#
-			
-			jmp continue
-		oBrk:		#
-			
-			jmp continue
-		cBrk:		#
-			
-			jmp continue
-		oCrl:		#
-			
-			jmp continue
-		cCrl:		#
-			
-			jmp continue
-		sCln:		#
-			
-			jmp continue
-		specialF:
-			cmpb $'=', -1(%rax)
-			je eqls
-			cmpb $'+', -1(%rax)
-			je addt
-			cmpb $'-', -1(%rax)
-			je subt
-			cmpb $'*', -1(%rax)
-			je mult
-			cmpb $'/', -1(%rax)
-			je divd
-			#jmp lexerror
-			
-			eqls:		#set var, return none	(x = y);
-				
-			jmp continue
-			addt:		#return sum of 2 ins 	(x + y);
-				
-			jmp continue
-			subt:		#
-				
-			jmp continue
-			mult:		#
-				
-			jmp continue
-			divd:		#
-				
-			jmp continue
-		
-
-		
-		continue:
 
 
 
