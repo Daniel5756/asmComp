@@ -4,10 +4,17 @@ rawIn:	.zero 1024
 
 test:	.asciz "gnfejiownbgi"
 #COMMANDS:
-starter:	.asciz " .text \n .globl _start \n .type _start, @function \n "
+starter:	.asciz " .text \n .globl _start \n .type _start, @function \n _start: \n "
+
 nl:	.asciz "\n"
 myCall: .asciz "call "
 myPush:	.asciz "push "
+myRet:	.asciz "ret "
+myPop:	.asciz "pop "
+
+currVar: 	.zero 40 #thing buffer
+currVarReset: 	.zero 40 #reset buff
+
 fullData:	.zero 100
 fullDataPtr:	.long 0
 startData: 	.asciz ".data \n mem: .zero 1024 \n mallocPtr: .long 0 \n"
@@ -33,7 +40,7 @@ _start:
 	
 	mov $rawIn, %rax
 	#for character:
-	mainLoop:
+	.mainLoop:
 		
 		mov (%rax), %bl
 		cmpb $'(', %bl
@@ -57,20 +64,50 @@ _start:
 			#REG CASE (PRINT CALL FUNCTION)
 			#PRINT CALL AND THE FUNCTION
 			oParLoop:
-				#count len before current index until a special character or a space: so abcd( results in -4 because a is at -4
+				#use paper notes
 ###PICK UP LEFT OFF HERE MAKE THIS FUNCTION ABOVE FOR PRINTING GAHHHHHH (AS A FUNCTION)
-##########while ((rax) ! in "(){}[];") {
-##########	rax++
-##########	if (rax) != ' ': count ++
-##########return count
-##########
+##########compile of "(a = f(b(c), d(e));
+#go down %rsp
+#If x exec the do function which pushes 
+#If w go back to parsing
+##########exec stack:
+##########x=function start
+##########w=line start
+##########[a] = ptr to c
+#c
+#x
+#[c]
+#b
+################need a way to tell where the function entrance is
+#e
+#x
+#[e]
+#d
+
+#x
+#[b]
+#[d]
+#f
+
+#a
+#x
+
+#[f]
+#[a]
+#=
+
+#w
 
 
-				
-				
-				
-				
-				
+
+#general exec of stack: returns to %rax
+#runloop:
+#pop %rbx
+#push %rax
+#mov $0, %rax
+#jmp %rbx	#functions return to runloop
+
+
 			jmp continue
 		cPar:		#
 			
