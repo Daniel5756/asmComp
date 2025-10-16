@@ -43,13 +43,7 @@ _start:
 	.mainLoop:				#use paper notes
 ###PICK UP LEFT OFF HERE MAKE THIS FUNCTION ABOVE FOR PRINTING GAHHHHHH (AS A FUNCTION)
 ##########compile of "(a = f(b(c), d(e));
-#go down %rsp
-#If x exec the do function which pushes 
-#If w go back to parsing
-##########exec stack:
-##########x=function start
-##########w=line start
-##########[a] = ptr to c
+##########compiles to:
 #push e
 #call d
 #push c
@@ -57,12 +51,22 @@ _start:
 #call f
 #push a
 #call =
+/*
+it goes along.
+keeps track of inside/outside quotes
+if outside <>
+ if it sees no ( right after buffer: push its pointer and len and that its a constant
+ if it sees ( right after it is call and it pushes pointer and len and that its a function
+ if it sees a +- * / = then use special function case and still push the same stuff
+if in <> add that to compiler .data char[] and turn it into a bunch of spaces in the string buffer to not confuse the next step
 
-
-
-
-
-
+now push 1 by 1
+if its a function print "call "
+if its a constant print "push "
+then print the buffer
+then \n
+then repeat
+*/
 
 jmp exit
 
