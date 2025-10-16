@@ -41,6 +41,7 @@ _start:
 	mov $rawIn, %rax
 	#for character:
 	.mainLoop:				#use paper notes
+/*
 ###PICK UP LEFT OFF HERE MAKE THIS FUNCTION ABOVE FOR PRINTING GAHHHHHH (AS A FUNCTION)
 ##########compile of "(a = f(b(c), d(e));
 ##########compiles to:
@@ -66,7 +67,40 @@ if its a constant print "push "
 then print the buffer
 then \n
 then repeat
+
+slightly less pseudo looking code:
+
+name = 0
+data = 0
+asm = 0
+numTolkens=0
+for char:
+	if char is '[': print until it is ']' (and add nl)
+	
+	if char is '<': copy text to compiler .data string until '>' (and add nl)
+	
+	if char not in special:
+		numTolkens++
+		push index
+		name = 1
+	if char in special (special="()<>[]{},+*-/=...")
+		if name > 0:
+			push name #name is a len counter
+			name = 0
+			if char == '('
+				push 'f' #function
+			if char in " ,)+*-/="
+				push 'v' #variable
+			else: what the hell are you doing
+	if char in "+*-/=":
+		pop rax,rbx,rcx
+		push &"add"[sub,mul,div], 3, 'f'
+		push rcx,rbx,rax    #this just puts the operation token from (x + y) to +(x,y)
+		
+
 */
+
+
 
 jmp exit
 
