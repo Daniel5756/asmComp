@@ -19,6 +19,10 @@ fullData:	.zero 100
 fullDataPtr:	.long 0
 startData: 	.asciz ".data \n mem: .zero 1024 \n mallocPtr: .long 0 \n"
 
+name: .long 0
+data: .long 0
+inAsm: .long 0
+numTolkens: .long 0
 
 	.text
 	.globl	_start
@@ -37,11 +41,66 @@ _start:
 	push $1024
 	call read
 	#inputs pgm
-	
+	mov $0, name 
+	mov $0, data 
+	mov $0, inAsm
+	mov $0, numTolkens
 	mov $rawIn, %rax
 	#for character:
 	.mainLoop:				#use paper notes
+		#char = (%rax)
+
+		cmp $'[', (%rax)
+		cmove %rax, inAsm
+		
+		cmp $']', (%rax)
+		jne closeasmcontinue
+		push inAsm
+		mov %rax, %rbx
+		sub %rbx, inAsm
+		push %rbx
+		push $0 #######0 = asm call
+		closeasmcontinue:
+		cmp $'<', (%rax)
+		cmove %rax, data
+		
+		cmp $'>', (%rax)
+		jne closedatacontinue
+		
+		#strcpy
+		
+		closedatacontinue:
+		
+		
 /*
+
+name = 0
+data = 0
+inAsm = 0
+numTolkens=0
+for char:
+	if char is '[': index to asm, if ']' print that
+	
+	if char is '<': copy text to compiler .data string until '>' (and add nl)
+	
+	if char not in special:
+		numTolkens++
+		push index
+		name = 1
+	if char in special (special="()<>[]{},+*-/=...")
+		if name > 0:
+			push name #name is a len counter
+			name = 0
+			if char == '('
+				push 'f' #function
+			if char in " ,)+*-/="
+				push 'v' #variable
+			else: what the hell are you doing
+	if char in "+*-/=":
+		pop rax,rbx,rcx
+		push &"add"[sub,mul,div], 3, 'f'
+		push rcx,rbx,rax    #this just puts the operation token from (x + y) to +(x,y)
+
 ###PICK UP LEFT OFF HERE MAKE THIS FUNCTION ABOVE FOR PRINTING GAHHHHHH (AS A FUNCTION)
 ##########compile of "(a = f(b(c), d(e));
 ##########compiles to:
@@ -69,33 +128,6 @@ then \n
 then repeat
 
 slightly less pseudo looking code:
-
-name = 0
-data = 0
-asm = 0
-numTolkens=0
-for char:
-	if char is '[': print until it is ']' (and add nl)
-	
-	if char is '<': copy text to compiler .data string until '>' (and add nl)
-	
-	if char not in special:
-		numTolkens++
-		push index
-		name = 1
-	if char in special (special="()<>[]{},+*-/=...")
-		if name > 0:
-			push name #name is a len counter
-			name = 0
-			if char == '('
-				push 'f' #function
-			if char in " ,)+*-/="
-				push 'v' #variable
-			else: what the hell are you doing
-	if char in "+*-/=":
-		pop rax,rbx,rcx
-		push &"add"[sub,mul,div], 3, 'f'
-		push rcx,rbx,rax    #this just puts the operation token from (x + y) to +(x,y)
 		
 
 */
