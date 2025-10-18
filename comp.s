@@ -1,8 +1,9 @@
 	.data
 rawIn:	.zero 1024
 
-digs:	.asciz "0123456789"
-test:	.asciz "1234567890"
+printIntBuff:	.asciz "0000000000000000"
+digs:	.asciz "0123456789ABCDEF"
+test:	.asciz "123456789ABCDEF0"
 #COMMANDS:
 starter:	.asciz " .text \n .globl _start \n .type _start, @function \n _start: \n "
 
@@ -30,12 +31,12 @@ mainIndex: .long 0
 	.type	_start, @function
 _start:
 
-	push $test
-	push $digs
-	push $3
-	call strCpy
+	#push $test
+	#push $digs
+	#push $3
+	#call strCpy
 	
-	push $123
+	push $printInt
 	call printInt
 	
 	jmp exit
@@ -177,39 +178,37 @@ strCpy:
 		
 		
 
-printInt:		#PRINTS AN INT
-	mov -8(%rsp), %rax
-	push %rax
-	mov $1000000000, %rbx
+printInt:		#PRINTS AN INT base 16
+	mov 8(%rsp), %rax
+	
+	mov $printIntBuff, %rbx
+	movq $0, (%rbx)
+	movq $0, 8(%rbx)
+	add $15, %rbx
 	printIntLoop:
-		mov $0, %rdx		#0:%rax
-		mov $10, %rbx		#divide by 10
-		mov %rbx, %rax		#divide %r9
-		div %rbx		#divide %r9/10
-		mov %rax, %rbx		#put result in %r9
+		mov %rax, %rcx
+		and $15, %rcx		#bitmask
+		shr $4, %rax
 
-		pop %rax		#pop num
-		mov $0, %rdx		#0:%rax
-		div %r9			#
-		
-		push %rdx		#push remaining number back
-		
 
-		#push %r8
-		#PRINT
-
-		#add $digs, %rax
-		#push %rax
-		#push $1
-		#call print
+		add $digs, %rcx		#ptr from bitmask
+		mov (%rcx), %dl
+		mov %dl, (%rbx)
+		dec %rbx
 
 		#END of loop
-		#pop %r8
 
 
-		cmp $1, %r9
-		jg printIntLoop
-	ret $1
+		cmp $0, %rax		#if %rax is more than 
+		jne printIntLoop
+
+	printIntLoop2:
+		push $printIntBuff
+		push $16
+		call print
+	printIntRet:
+
+	ret $8
 
 
 chrInStr:
@@ -244,7 +243,7 @@ chrInStr:
 			jne chrInStrLoop	#jump
 	push %rdx
 	#push %r8
-	ret $3
+	ret $24
 
 
 
@@ -258,7 +257,7 @@ print:
 	mov $1, %rdi		#stdin
 	syscall			#Call the kernel
 
-	ret	$2
+	ret	$16
 read:
 	mov 16(%rsp), %rsi
 	mov 8(%rsp), %rdx
@@ -267,7 +266,7 @@ read:
 	mov $0, %rdi		#File descriptor for stdout
 	syscall			#Call the kernel
 
-	ret
+	ret $16
 exit:
 	#EXIT COMPILER
 	movq $60, %rax        # syscall number for sys_exit
