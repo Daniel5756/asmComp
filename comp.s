@@ -30,13 +30,7 @@ mainIndex: .long 0
 	.globl	_start
 	.type	_start, @function
 _start:
-
-	#push $test
-	#push $digs
-	#push $3
-	#call strCpy
-	
-	push $printInt
+	push $100
 	call printInt
 	
 	jmp exit
@@ -53,40 +47,72 @@ _start:
 	movq $0, numTolkens
 	movq $rawIn, mainIndex
 	#for character
-	.mainLoop:				#use paper notes
+	.mainLoop:				#
 		#char = (mainIndex)
-
+	squareContinue:				#square and carrot continued both check for the open bracket then loop until the end and then push the tolken
 		cmpb $'[', (mainIndex)
-		jne openasmcontinue
+		jne carrotContinue
 		movq mainIndex, %rax
-		movq %rax, inAsm
-		openasmcontinue:
-		cmpb $']', (mainIndex)
-		jne closeasmcontinue
-		cmpq $0, inAsm
-		jne closeasmcontinue
-		push inAsm		#index
-		mov mainIndex, %rbx
-		sub %rbx, inAsm
-		push %rbx		#len
-		push $0 		#0 = asm call
-		movq $0, inAsm		#reset inAsm
-		closeasmcontinue:
-
-
-
+		movq $0, inAsm
+		mov mainIndex, %rax
+		inc %rax
+		#CONTINUE UNTIL ']'
+		squareBracketLoop:
+			cmpb $']', (mainIndex)
+			je squareBracketEnd
+			incq mainIndex
+			incq inAsm
+			
+			
+			jmp squareBracketLoop
+		squareBracketEnd:
+			push %rax
+			push inAsm
+			push $0		#asm tolken
+	carrotContinue:
+###CARROT BRACKET
 		cmpb $'<', (mainIndex)
-		jne opendatacontinue
-		movq %rax, data
-		opendatacontinue:
-		cmpb $'>', (mainIndex)
-		jne closedatacontinue
-		cmpq $0, data
-		jne closedatacontinue
-		#arraycpy
-		
-		
-		closedatacontinue:
+		jne curlyContinue
+		movq mainIndex, %rax
+		movq $0, data
+		mov mainIndex, %rax
+		inc %rax
+		#CONTINUE UNTIL ']'
+		carrotBracketLoop:
+			cmpb $'>', (mainIndex)
+			je carrotBracketEnd
+			incq mainIndex
+			incq data
+			
+			
+			jmp carrotBracketLoop
+		carrotBracketEnd:
+			push %rax
+			push data
+			push $1		#data tolken
+			
+	curlyContinue:
+###CURLY BRACKET						##HAVE TO CHANGE
+		cmpb $'{', (mainIndex)
+		jne curlyContinue
+		movq mainIndex, %rax
+		movq $0, name
+		mov mainIndex, %rax
+		inc %rax
+		#CONTINUE UNTIL ']'
+		curlyBracketLoop:
+			cmpb $'}', (mainIndex)
+			je curlyBracketEnd
+			incq mainIndex
+			incq name
+			
+			
+			jmp curlyBracketLoop
+		curlyBracketEnd:
+			push %rax
+			push name
+			push $1		#data tolken
+			
 		
 jmp exit
 /*
