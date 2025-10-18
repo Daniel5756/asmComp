@@ -1,7 +1,7 @@
 	.data
 rawIn:	.zero 1024
 
-
+digs:	.asciz "0123456789"
 test:	.asciz "gnfejiownbgi"
 #COMMANDS:
 starter:	.asciz " .text \n .globl _start \n .type _start, @function \n _start: \n "
@@ -23,55 +23,65 @@ name: .long 0
 data: .long 0
 inAsm: .long 0
 numTolkens: .long 0
+mainIndex: .long 0
 
 	.text
 	.globl	_start
 	.type	_start, @function
 _start:
+
 	push $'g'
 	push $test
-	push $'10'
+	push $10
 	call chrInStr
 	
 	
 	
 	
-	mov $fullData, fullDataPtr
+	movq $fullData, fullDataPtr
 	push $rawIn
 	push $1024
 	call read
 	#inputs pgm
-	mov $0, name 
-	mov $0, data 
-	mov $0, inAsm
-	mov $0, numTolkens
-	mov $rawIn, %rax
+	movq $0, name 
+	movq $0, data 
+	movq $0, inAsm
+	movq $0, numTolkens
+	movq $rawIn, mainIndex
 	#for character:
 	.mainLoop:				#use paper notes
-		#char = (%rax)
+		#char = (mainIndex)
 
-		cmp $'[', (%rax)
-		cmove %rax, inAsm
-		
-		cmp $']', (%rax)
+		cmpb $'[', (mainIndex)
+		jne openasmcontinue
+		movq mainIndex, inAsm
+		openasmcontinue:
+		cmpb $']', (mainIndex)
 		jne closeasmcontinue
-		push inAsm
-		mov %rax, %rbx
+		cmpq $0, inAsm
+		jne closeasmcontinue
+		push inAsm		#index
+		mov mainIndex, %rbx
 		sub %rbx, inAsm
-		push %rbx
-		push $0 #######0 = asm call
+		push %rbx		#len
+		push $0 #######		0 = asm call
+		mov $0, inAsm		#reset inAsm
 		closeasmcontinue:
-		cmp $'<', (%rax)
-		cmove %rax, data
-		
-		cmp $'>', (%rax)
+
+
+
+		cmpb $'<', (mainIndex)
+		jne opendatacontinue
+		movq %rax, data
+		opendatacontinue:
+		cmpb $'>', (mainIndex)
 		jne closedatacontinue
-		
-		#strcpy
+		cmpq $0, data
+		#arraycpy
 		
 		closedatacontinue:
 		
-		
+jmp exit
 /*
 
 name = 0
@@ -137,11 +147,29 @@ slightly less pseudo looking code:
 jmp exit
 
 ###FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
+strCpy:
+	pop %rcx
+	pop %rbx
+	pop %rax
+	mov $0, %rdx
+	strCpyLoop:
+		cmp %rdx, %rcx
+		je strCpyEnd
+		mov (%rax), %dl
+		mov %dl, (%rbx)
+		
+		
+		jmp strCpyLoop
+	strCpyEnd:
+		ret
+		
+		
+
 printInt:		#PRINTS AN INT
 	pop %rax
 	pop %rbx
 	push %rax
-	push $rbx
+	push %rbx
 	mov $1000000000, %r9
 	printIntLoop:
 		mov $0, %rdx		#0:%rax
