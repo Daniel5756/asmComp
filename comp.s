@@ -2,7 +2,7 @@
 rawIn:	.zero 1024
 
 digs:	.asciz "0123456789"
-test:	.asciz "gnfejiownbgi"
+test:	.asciz "1234567890"
 #COMMANDS:
 starter:	.asciz " .text \n .globl _start \n .type _start, @function \n _start: \n "
 
@@ -30,12 +30,15 @@ mainIndex: .long 0
 	.type	_start, @function
 _start:
 
-	push $'g'
 	push $test
-	push $10
-	call chrInStr
+	push $digs
+	push $3
+	call strCpy
 	
+	push $123
+	call printInt
 	
+	jmp exit
 	
 	
 	movq $fullData, fullDataPtr
@@ -48,13 +51,14 @@ _start:
 	movq $0, inAsm
 	movq $0, numTolkens
 	movq $rawIn, mainIndex
-	#for character:
+	#for character
 	.mainLoop:				#use paper notes
 		#char = (mainIndex)
 
 		cmpb $'[', (mainIndex)
 		jne openasmcontinue
-		movq mainIndex, inAsm
+		movq mainIndex, %rax
+		movq %rax, inAsm
 		openasmcontinue:
 		cmpb $']', (mainIndex)
 		jne closeasmcontinue
@@ -64,8 +68,8 @@ _start:
 		mov mainIndex, %rbx
 		sub %rbx, inAsm
 		push %rbx		#len
-		push $0 #######		0 = asm call
-		mov $0, inAsm		#reset inAsm
+		push $0 		#0 = asm call
+		movq $0, inAsm		#reset inAsm
 		closeasmcontinue:
 
 
@@ -77,7 +81,9 @@ _start:
 		cmpb $'>', (mainIndex)
 		jne closedatacontinue
 		cmpq $0, data
+		jne closedatacontinue
 		#arraycpy
+		
 		
 		closedatacontinue:
 		
@@ -148,17 +154,23 @@ jmp exit
 
 ###FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
+	pop %rdx
 	pop %rcx
 	pop %rbx
 	pop %rax
+	push %rdx
 	mov $0, %rdx
+	mov $0, %rsi
 	strCpyLoop:
-		cmp %rdx, %rcx
+		cmp %rsi, %rcx
 		je strCpyEnd
-		mov (%rax), %dl
-		mov %dl, (%rbx)
-		
-		
+		movb (%rax), %dl
+		movb %dl, (%rbx)
+
+		inc %rsi
+		inc %rax
+		inc %rbx
+
 		jmp strCpyLoop
 	strCpyEnd:
 		ret
@@ -166,42 +178,38 @@ strCpy:
 		
 
 printInt:		#PRINTS AN INT
-	pop %rax
-	pop %rbx
+	mov -8(%rsp), %rax
 	push %rax
-	push %rbx
-	mov $1000000000, %r9
+	mov $1000000000, %rbx
 	printIntLoop:
 		mov $0, %rdx		#0:%rax
 		mov $10, %rbx		#divide by 10
-		mov %r9, %rax		#divide %r9
+		mov %rbx, %rax		#divide %r9
 		div %rbx		#divide %r9/10
-		mov %rax, %r9		#put result in %r9
+		mov %rax, %rbx		#put result in %r9
 
 		pop %rax		#pop num
 		mov $0, %rdx		#0:%rax
 		div %r9			#
 		
-		push %rdx
+		push %rdx		#push remaining number back
 		
 
-		push %r8
+		#push %r8
 		#PRINT
 
-		add $digs, %rax
-		push %rax
-		push $1
-		call print
+		#add $digs, %rax
+		#push %rax
+		#push $1
+		#call print
 
 		#END of loop
-		pop %r8
+		#pop %r8
 
 
 		cmp $1, %r9
 		jg printIntLoop
-	
-	#push %r8
-	ret
+	ret $1
 
 
 chrInStr:
