@@ -47,8 +47,11 @@ _start:
 	movq $0, numTolkens
 	movq $rawIn, mainIndex
 	#for character
-	.mainLoop:				#
+
+
+parseLine:																			
 		#char = (mainIndex)
+													
 	squareContinue:				#square and carrot continued both check for the open bracket then loop until the end and then push the tolken
 		cmpb $'[', (mainIndex)
 		jne carrotContinue
@@ -62,13 +65,12 @@ _start:
 			je squareBracketEnd
 			incq mainIndex
 			incq inAsm
-			
-			
 			jmp squareBracketLoop
 		squareBracketEnd:
 			push %rax
 			push inAsm
-			push $0		#asm tolken
+			push $0		#asm tolken							
+													
 	carrotContinue:
 ###CARROT BRACKET
 		cmpb $'<', (mainIndex)
@@ -83,37 +85,66 @@ _start:
 			je carrotBracketEnd
 			incq mainIndex
 			incq data
-			
-			
 			jmp carrotBracketLoop
 		carrotBracketEnd:
 			push %rax
 			push data
-			push $1		#data tolken
-			
+			push $1		#data tolken							
+													
 	curlyContinue:
-###CURLY BRACKET						##HAVE TO CHANGE
+###CURLY BRACKET						##checks for open, pushesname tolken and keeps going. Separately close bracket means ret.
 		cmpb $'{', (mainIndex)
-		jne curlyContinue
+		jne curlyCloseContinue
 		movq mainIndex, %rax
 		movq $0, name
 		mov mainIndex, %rax
 		inc %rax
 		#CONTINUE UNTIL ']'
-		curlyBracketLoop:
-			cmpb $'}', (mainIndex)
-			je curlyBracketEnd
-			incq mainIndex
+		curlyOpenBracketLoop:
+			cmpb $'\n', (mainIndex)
+			je curlyOpenBracketEnd
+			decq %rax
 			incq name
-			
-			
-			jmp curlyBracketLoop
-		curlyBracketEnd:
+			jmp curlyCloseBracketLoop
+		curlyOpenBracketEnd:
 			push %rax
 			push name
-			push $1		#data tolken
-			
-		
+			push $2		#function tolken						
+													
+
+	curlyCloseContinue:
+###CURLY BRACKET						##checks for open, pushesname tolken and keeps going. Separately close bracket means ret.
+		cmpb $'}', (mainIndex)
+		jne curlyCloseContinue
+		curlyCloseBracketEnd:
+			push %rax
+			push name
+			push $3		#function end tolken						
+													
+	parenOpenContinue:
+		cmpb $'{', (mainIndex)
+		jne curlyCloseContinue
+		movq mainIndex, %rax
+		movq $0, name
+		mov mainIndex, %rax
+		inc %rax
+		#CONTINUE UNTIL ']'
+		parenOpenLoop:
+			cmpb $'\n', (%rax)
+			je curlyOpenBracketEnd
+			decq %rax
+			incq name
+			jmp curlyCloseBracketLoop
+		parenOpenEnd:
+			push %rax
+			push name
+			push $4		#call tolken							
+													
+		#I ACTUALLY DON'T NEED A CLOSE PARENTHESES. THEY DON'T DO ANYTHING
+					#BUT I DO NEED TO MAKE A SPECIAL THING WHERE IF IT SEES A DOLLAR SIGN IT PUSHES THAT UNTIL THERE IS A SPACE OR COMMA AFTER
+					
+					
+					
 jmp exit
 /*
 
