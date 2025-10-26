@@ -24,7 +24,7 @@
 	push %rax	#ret and in
 	push %rbx	
 	]
-	@&  #@ calls a function
+	@&(-(%rsp))  #@ calls a function
 	
 	]
 }
