@@ -1,13 +1,15 @@
 #I'm trying this route. I want to write the compiler in itself and hand compile it and try to compile it in itself once I compile it myself. I'm not crazy...
 #is a comment
-#@calls a function
-#. declares new thing (function or allocates a long)
+#@calls a function					adds _ to beginning
+#. declares new thing (function or allocates a long)	adds _ to beginning
 #<> add to .data
 #[] is asm
 #{ indicates f and } rets
+# , means don't push anything
+
 
 #NC compiler I will compile by had to assembly(?)
-.&{
+.*{
 #dereference
 	[
 	pop %rax #return address
@@ -24,9 +26,8 @@
 	push %rax	#ret and in
 	push %rbx	
 	]
-	@&(-(%rsp))  #@ calls a function
+	@*(+(%rsp, x()))  #@ calls a function
 	
-	]
 }
 .compr{
 #cmp
