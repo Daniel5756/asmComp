@@ -1,0 +1,2 @@
+nc->compile-to-bytecode->bytecode-compiler->run
+...nc+++->nc++->nc+->nc->bc->asm
