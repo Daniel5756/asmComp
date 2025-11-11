@@ -47,6 +47,12 @@ _start:
 	#jmp L0
 	#L0c
 	jmp exit
+
+	#make 'let':
+	#add this to heap array: [StringPtrName, scope ptr],[''],['']
+	#
+	
+	#
 ###FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
 	pop %rdx
