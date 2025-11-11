@@ -14,19 +14,38 @@ nl:	.asciz "\n"
 _start:
 	push $rawIn
 	call read
-	#now read has bytecode
-	#for newline: 3chars is command and all after is an input number or variable thing (gets a $ in front and becomes as the minor input)
-	#print command: (command names in arm and x86 are the same (i hope)) mov=mov jmp=jmp jc = jc je = je, shl=shl
-	#basically pop top 2 off stack, do command, push result.
-	#makes an extremely unusable language but thats ok
-	#not supposed to be usable. just so nc can easily compile
-	#a=add, b=****, c=cmp, d=dec, e=****, f=fetch from heap, g=****, h=move to heap, i=inc, j=jmp (perand is type), k=****, l=shl, m=mov (perand is type), n=****, 
-	#o=logic (perand is type), p=push perand, q=****, r=shr, s=syscall, t=****, u=****, v=****, w=****, x=****, y=****, z=****
-	# (total of 26 commands)
-	#ALSO i need to somehow label things (upper case letter followed by number F__ function G__ global A_ array...)
-	#looks like this:
-	#p3p6ap4c_j
 	#
+	
+	#evaluate expression:
+	#a(b, c(d,e));
+	#push e
+	#push d
+	#call c
+	#push b
+	#call a
+
+
+	##if(expression) {statements}
+	#
+	#evaluate expression
+	#pop %rax
+	#cmp $0, %rax
+	#je C0
+	#
+	#evaluate statements
+	#
+	#C0:
+
+	#while(expression) {statements}
+	#L0:
+	#eval expr
+	#pop %rax
+	#cmp $0, %rax
+	#
+	#evaluate statememnts
+	#
+	#jmp L0
+	#L0c
 	jmp exit
 ###FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
