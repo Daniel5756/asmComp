@@ -12,47 +12,75 @@ nl:	.asciz "\n"
 	.globl	_start
 	.type	_start, @function
 _start:
-	push $rawIn
-	call read
+#MAIN LOOP JUST GOES LIKE
+#find all ';' and '\n' and '#'
+#.if there is a ';' or '\n' next char is a (ignore spaces) start
+#compare first chars to the key words and call the right function
+#AFTER LOOP:
+#print data
+jmp exit
+============================================================
+	#FUNCTIONS FOR THE THING
+eval:
+	mov $0, %rax #depth = 0
+	#for char: if '(' depth++ if ')' depth -- if ', ' and depth 0: push its stringiness and call recursively, if '/ /' ignore until next \n.
+	#the result of the evaluation is in the stack
+	ret
+def:
+	#add to the hashtable with the evaluation of the thing evaluated
+	ret
+fn:
+	#add label and resolve each line and print ret at the end.
+	ret
+for:
+	#print (evaluated) statement in parentheses. pritn 'Cx'
+	#eval statement 2 and cmp to jump to end
+	#eval each line after antil }
+	#eval 3rd statement
+	#jmp
+	#print 'cx' as end
+	ret
+while:
+	#print 'Cx'
+	#eval statement
+	#cmp
+	#eval each line
+	#print 'cx:'
+	jmp Cx
+	ret
+if:
+	#print 'Cx'
+	#eval statement
+	#cmp
+	#eval each line
+	#print cx
+	ret
+struct:
+	#go line by line and calc size
+	#go line by line and add each variable to hash table for structs and add the struct name to the defn hastable
+	#so the structs have a hash table and when referenced, you get s.var = *(s+var) #var being from the struct hashtable and s in the var hashtable
+	#and hope he names are different
 	#
-	
-	#evaluate expression:
-	#a(b, c(d,e));
-	#push e
-	#push d
-	#call c
-	#push b
-	#call a
+	ret
+push:
+	#lit just eval the statement
+	ret
+pop:
+	#pop to the varible (deref from hashtable to stack and whatever :(...)
+	ret
+asm:
+	#lit just print the thing after asm
+	ret
+data:
+	#add to buffer and print at the end
+	ret
+retr:
+	ret
+
+THATS THE COMPILER!!!
 
 
-	##if(expression) {statements}
-	#
-	#evaluate expression
-	#pop %rax
-	#cmp $0, %rax
-	#je C0
-	#
-	#evaluate statements
-	#
-	#C0:
 
-	#while(expression) {statements}
-	#L0:
-	#eval expr
-	#pop %rax
-	#cmp $0, %rax
-	#
-	#evaluate statememnts
-	#
-	#jmp L0
-	#L0c
-	jmp exit
-
-	#make 'let':
-	#add this to heap array: [StringPtrName, scope ptr],[''],['']
-	#
-	
-	#
 ###FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
 	pop %rdx
