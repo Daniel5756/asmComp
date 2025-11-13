@@ -173,7 +173,33 @@ chrInStr:
 	#push %r8
 	ret $24
 
-
+cmpString:	#RECURSIVE
+	mov 24(%rsp), %rax #pointer 1
+	mov 16(%rsp), %rbx #pointer 2
+	mov  8(%rsp), %rcx #length
+	
+	cmp %rcx, 0
+	je cmpStringConditional
+	#call itself
+	##check if this character matches
+	
+	inc %rax
+	inc %rbx
+	dec %rcx
+	push %rax
+	#++++++++++++++++++++++++++++++++++++++++++JNVIWNI
+	mov (%rax), %rcx
+	mov %rcx, %rax
+	mov (%rbx), %rcx
+	mov %rcx, %rbx
+	mov $0, %rcx
+	mov $1, %rdx
+	cmp %rax, %rbx
+	cmove %rdx, %rcx
+	mov %rcx, 24(%rsp)
+	ret 2
+cmpStringConditional:
+	mov $1, 24(%rsp)
 
 print:
 	mov 16(%rsp), %rsi
