@@ -27,15 +27,21 @@ eval:
 	#the result of the evaluation is in the stack
 	ret
 def:
-	#add to the hashtable with the evaluation of the thing evaluated
+	#nonono, push it to this stack: ptr, len type, ptr, len, type, ... then I can pop out when scope ends
 	ret
 fn:
-	#add label and resolve each line and print ret at the end.
+	#add label and 
+	#resolve each line and print ret thing at the end (need to ).
+	#need to end scope at the end, so some register has the old rsp and it has to restore to that.
 	ret
 for:
 	#print (evaluated) statement in parentheses. pritn 'Cx'
 	#eval statement 2 and cmp to jump to end
+
+
 	#eval each line after antil }
+
+
 	#eval 3rd statement
 	#jmp
 	#print 'cx' as end
@@ -44,7 +50,11 @@ while:
 	#print 'Cx'
 	#eval statement
 	#cmp
+
+
 	#eval each line
+
+
 	#print 'cx:'
 	jmp Cx
 	ret
@@ -52,21 +62,25 @@ if:
 	#print 'Cx'
 	#eval statement
 	#cmp
+
+
 	#eval each line
+
+
 	#print cx
 	ret
 struct:
-	#go line by line and calc size
 	#go line by line and add each variable to hash table for structs and add the struct name to the defn hastable
-	#so the structs have a hash table and when referenced, you get s.var = *(s+var) #var being from the struct hashtable and s in the var hashtable
-	#and hope he names are different
+	#THE HASHTABLE has to keep track of the type of struct and has more stuff for ints and primitives. the 'type' is a pointer to this table.
+	#It does this with a -1 ptr as the separation
+	#so the structs have a hash table and when referenced, you get s.var = *(s+var) (only if var is in the type that s is) (type 0=int, 1=float, 2=char, all else is structs)
 	#
 	ret
 push:
 	#lit just eval the statement
 	ret
 pop:
-	#pop to the varible (deref from hashtable to stack and whatever :(...)
+	#pop to the varible (deref from stack table to stack and whatever :(...)
 	ret
 asm:
 	#lit just print the thing after asm
@@ -77,11 +91,10 @@ data:
 retr:
 	ret
 
-THATS THE COMPILER!!!
+#THATS THE COMPILER!!!
 
 
-
-###FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
+###HELPER FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
 	pop %rdx
 	pop %rcx
@@ -197,9 +210,10 @@ cmpString:	#RECURSIVE
 	cmp %rax, %rbx
 	cmove %rdx, %rcx
 	mov %rcx, 24(%rsp)
-	ret 2
+	ret $16
 cmpStringConditional:
 	mov $1, 24(%rsp)
+	ret $16
 
 print:
 	mov 16(%rsp), %rsi

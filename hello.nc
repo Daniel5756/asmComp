@@ -1,15 +1,19 @@
 #adds to data section 
-<hello: .asciz "hello world">
+data hello: .asciz "hello world";
 #print function
-print{[
-
-        mov 8(%rsp), %rsi	#other order because inputs get pushed reversely
-        mov 16(%rsp), %rdx	#
-        mov $1, %rax            #System call number
-        mov $1, %rdi            #stdin
-        syscall                 #Call the kernel
-        ret     $16	
-]}
+fn print(int* ptr, int len) {
+	asm mov 8(%rsp), %rsi;	#other order because inputs get pushed reversely
+	asm mov 16(%rsp), %rdx;	#
+	asm mov $1, %rax;            #System call number
+	asm mov $1, %rdi;            #stdin
+	asm syscall;                 #Call the kernel
+	asm ret     $16;	
+#void
+}
 
 #usually there would be a standard library for basic functions like print
-print(hello);
+fn main() {
+
+	print(hello);
+
+}
