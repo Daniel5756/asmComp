@@ -48,7 +48,7 @@ jmp exit
 #NOTES
 /*
 evaluate all means basically note that it is in a function. It does this with the register that stores the scope .... actually just had a massive brainfart
-
+pushes base pointer. a { pushes r8 and moves the rsp to r8. a } squiggle ends the scope by making rsp=(r8) and poping to r8
 
 
 */
@@ -126,8 +126,52 @@ retr:
 
 
 ###SPECIFIC HELPER FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
+oBracket:
+	pop %rax
+	#pushes base pointer. a { pushes r8 and moves the rsp to r8. a } squiggle ends the scope by making rsp=(r8) and poping to r8
+	push %r8
+	mov %rsp, %r8
+	push %rax
+	ret
+cBracket:
+	pop %rax
+	mov %r8, %rsp
+	pop %r8
+	push %rax
+	ret
+findVariable:
+/*	pop ptr
+	pop len
+	while r8 < rsp:
+		pop ra b cx
+		cmp lengths
+		cmp strings
+		if equal then push value and ret
+	*/
+	mov 16(%rsp), %rax	#pointer
+	mov 8(%rsp), %rbx	#len
+	mov %rsp, %rcx 	#counter
+	findVarLoop:#IF VAR DOES NOT EXIST THERE IS SEG FAULT
+		add $24, %rcx
+		cmp (%rcx), %rax #/*to define you push ptr, push len, push val*/
+		cmp 8(%rcx), %rbx #len
+		jne findVarLoop
+		
+		push %rax
+		push %rbx
+		push %rcx
 
-
+		push 16(%rcx)
+		push %rax
+		push %rbx #len
+		call cmpString
+		pop %rsi
+		
+		pop %rcx
+		pop %rbx
+		pop %rax
+		
+		cmp %rsi, 
 ###GENERIC FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
 	pop %rdx
@@ -174,7 +218,7 @@ printInt:		#PRINTS AN INT base 16
 		#END of loop
 
 
-		cmp $0, %rax		#if %rax is more than 
+		cmp $0, %rax
 		jne printIntLoop
 
 	printIntLoop2:
