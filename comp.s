@@ -3,11 +3,12 @@ rawIn:	.zero 1024
 
 printIntBuff:	.asciz "0000000000000000"
 digs:	.asciz "0123456789ABCDEF"
-test:	.asciz "123456789ABCDEF0"
+test:	.asciz "0123456789ABCDEF"
 #COMMANDS:
 starter:	.asciz " .text \n .globl _start \n .type _start, @function \n _start: \n "
 
 nl:	.asciz "\n"
+
 	.text
 	.globl	_start
 	.type	_start, @function
@@ -18,11 +19,41 @@ _start:
 #compare first chars to the key words and call the right function
 #AFTER LOOP:
 #print data
+
+/*
+#TEST
+push %rsp
+call printInt
+
+push $nl
+push $2
+call print
+
+push $digs
+push $test
+push $10
+call cmpString
+call printInt
+
+push $nl
+push $2
+call print
+
+push %rsp
+call printInt
+*/
 jmp exit
-============================================================
+#============================================================
 	#FUNCTIONS FOR THE THING
-eval:
-	mov $0, %rax #depth = 0
+#NOTES
+/*
+evaluate all means basically note that it is in a function. It does this with the register that stores the scope .... actually just had a massive brainfart
+
+
+
+*/
+eval:	#RECURSIVE
+	#mov $0, %rax #depth = 0
 	#for char: if '(' depth++ if ')' depth -- if ', ' and depth 0: push its stringiness and call recursively, if '/ /' ignore until next \n.
 	#the result of the evaluation is in the stack
 	ret
@@ -56,7 +87,7 @@ while:
 
 
 	#print 'cx:'
-	jmp Cx
+	#jmp Cx
 	ret
 if:
 	#print 'Cx'
@@ -94,7 +125,10 @@ retr:
 #THATS THE COMPILER!!!
 
 
-###HELPER FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
+###SPECIFIC HELPER FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
+
+
+###GENERIC FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
 	pop %rdx
 	pop %rcx
@@ -190,36 +224,44 @@ cmpString:	#RECURSIVE
 	mov 24(%rsp), %rax #pointer 1
 	mov 16(%rsp), %rbx #pointer 2
 	mov  8(%rsp), %rcx #length
-	
-	cmp %rcx, 0
+
+	#BASECASE
+	cmp $0, %rcx
 	je cmpStringConditional
-	#call itself
-	##check if this character matches
-	
+
+	#push important stuff
+	push (%rax)
+	push (%rbx)
+
+
+	#RECURSE
 	inc %rax
 	inc %rbx
 	dec %rcx
 	push %rax
-	#++++++++++++++++++++++++++++++++++++++++++JNVIWNI
-	mov (%rax), %rcx
-	mov %rcx, %rax
-	mov (%rbx), %rcx
-	mov %rcx, %rbx
+	push %rbx
+	push %rcx
+	call cmpString
+	pop %rdx
+
+	#repop
+	pop %rbx
+	pop %rax
 	mov $0, %rcx
-	mov $1, %rdx
+
 	cmp %rax, %rbx
-	cmove %rdx, %rcx
+	cmove %rdx, %rcx 	#rcx=rdx AND rcx
+
+	#rcx has output for this char
 	mov %rcx, 24(%rsp)
 	ret $16
-cmpStringConditional:
-	mov $1, 24(%rsp)
+	cmpStringConditional:
+	movq $1, 24(%rsp) #basecase just returns 1.
 	ret $16
 
 print:
 	mov 16(%rsp), %rsi
 	mov 8(%rsp), %rdx
-
-
 
 	mov $1, %rax		#System call number
 	mov $1, %rdi		#stdin
