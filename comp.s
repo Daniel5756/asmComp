@@ -171,7 +171,12 @@ findVariable:
 		pop %rbx
 		pop %rax
 		
-		cmp %rsi, 
+		cmp %rsi, $1
+		je findVariableEnd
+		jmp findVarLoop
+	findVariableEnd:
+		mov 16(%rcx)
+		ret $8
 ###GENERIC FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
 	pop %rdx
