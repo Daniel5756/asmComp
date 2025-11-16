@@ -20,7 +20,7 @@ _start:
 #AFTER LOOP:
 #print data
 
-/*
+
 #TEST
 push %rsp
 call printInt
@@ -30,9 +30,12 @@ push $2
 call print
 
 push $digs
-push $test
 push $10
-call cmpString
+push $6
+
+push $digs
+push $9
+call findVariable
 call printInt
 
 push $nl
@@ -41,7 +44,7 @@ call print
 
 push %rsp
 call printInt
-*/
+
 jmp exit
 #============================================================
 	#FUNCTIONS FOR THE THING
@@ -142,8 +145,8 @@ cBracket:
 findVariable:
 /*	pop ptr
 	pop len
-	while r8 < rsp:
-		pop ra b cx
+	while not found:
+		pop rax rbx rcx
 		cmp lengths
 		cmp strings
 		if equal then push value and ret
@@ -151,10 +154,10 @@ findVariable:
 	mov 16(%rsp), %rax	#pointer
 	mov 8(%rsp), %rbx	#len
 	mov %rsp, %rcx 	#counter
+	#add $24, %rcx
 	findVarLoop:#IF VAR DOES NOT EXIST THERE IS SEG FAULT
-		add $24, %rcx
-		cmp (%rcx), %rax #/*to define you push ptr, push len, push val*/
-		cmp 8(%rcx), %rbx #len
+		#add $24, %rcx		 #/*to define you push ptr, push len, push val*/
+		cmpq 8(%rcx), %rbx 	#len
 		jne findVarLoop
 		
 		push %rax
@@ -171,11 +174,12 @@ findVariable:
 		pop %rbx
 		pop %rax
 		
-		cmp %rsi, $1
+		cmpq $1, %rsi
 		je findVariableEnd
 		jmp findVarLoop
 	findVariableEnd:
-		mov 16(%rcx)
+		mov 16(%rcx), %rax
+		mov %rax, 16(%rsi)
 		ret $8
 ###GENERIC FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
