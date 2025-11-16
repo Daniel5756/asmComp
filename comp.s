@@ -31,7 +31,7 @@ call print
 
 push $digs
 push $10
-push $1025
+push $17
 
 push $test
 push $10
@@ -179,7 +179,7 @@ findVariable:
 		je findVariableEnd
 		jmp findVarLoop
 	findVariableEnd:
-		push $0		#WTF?? why does it segfault without this??
+		push $10		#WTF?? why does it segfault without this??
 		call printInt	#
 		
 		mov 16(%rcx), %rax
@@ -211,7 +211,7 @@ strCpy:
 		
 		
 
-printInt:		#PRINTS AN INT base 16
+printInt:		#PRINTS AN INT base 16 /*NEED TO FIX STAT*/
 	mov 8(%rsp), %rax
 	
 	mov $printIntBuff, %rbx
