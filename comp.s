@@ -1,7 +1,7 @@
 	.data
 rawIn:	.zero 1024
 
-printIntBuff:	.asciz "0000000000000000"
+printIntBuff:	.asciz "0000000000000000000000"
 digs:	.asciz "0123456789ABCDEF"
 test:	.asciz "0123456789ABCDEF"
 #COMMANDS:
@@ -31,10 +31,10 @@ call print
 
 push $digs
 push $10
-push $6
+push $1025
 
-push $digs
-push $9
+push $test
+push $10
 call findVariable
 call printInt
 
@@ -156,7 +156,7 @@ findVariable:
 	mov %rsp, %rcx 	#counter
 	#add $24, %rcx
 	findVarLoop:#IF VAR DOES NOT EXIST THERE IS SEG FAULT
-		#add $24, %rcx		 #/*to define you push ptr, push len, push val*/
+		add $24, %rcx		 #/*to define you push ptr, push len, push val*/
 		cmpq 8(%rcx), %rbx 	#len
 		jne findVarLoop
 		
@@ -168,6 +168,7 @@ findVariable:
 		push %rax
 		push %rbx #len
 		call cmpString
+		
 		pop %rsi
 		
 		pop %rcx
@@ -178,9 +179,13 @@ findVariable:
 		je findVariableEnd
 		jmp findVarLoop
 	findVariableEnd:
+		push $0		#WTF?? why does it segfault without this??
+		call printInt	#
+		
 		mov 16(%rcx), %rax
+		#mov $103, %rax
 		mov %rax, 16(%rsi)
-		ret $8
+		ret $16
 ###GENERIC FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS######FUNCTIONS###
 strCpy:
 	pop %rdx
