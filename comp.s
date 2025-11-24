@@ -1,7 +1,7 @@
 	.data
 rawIn:	.zero 1024
 
-printIntBuff:	.asciz "0000000000000000000000"
+printIntBuff:	.byte 16
 digs:	.asciz "0123456789ABCDEF"
 test:	.asciz "0123456789ABCDEF"
 #COMMANDS:
@@ -211,9 +211,8 @@ strCpy:
 		
 		
 
-printInt:		#PRINTS AN INT base 16 /*NEED TO FIX STAT*/
+printInt:		#PRINTS AN INT base 16
 	mov 8(%rsp), %rax
-	
 	mov $printIntBuff, %rbx
 	movq $0, (%rbx)
 	movq $0, 8(%rbx)
@@ -230,7 +229,6 @@ printInt:		#PRINTS AN INT base 16 /*NEED TO FIX STAT*/
 		dec %rbx
 
 		#END of loop
-
 
 		cmp $0, %rax
 		jne printIntLoop
