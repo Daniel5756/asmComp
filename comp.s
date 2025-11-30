@@ -23,10 +23,10 @@ _start:
 
 #TEST
 push %rsp
-call printInt
-
-push $nl
-push $2
+call printInt2
+			//diabolically confused
+push $digs
+push $16
 call print
 
 push $digs
@@ -36,7 +36,7 @@ push $17
 push $test
 push $10
 call findVariable
-call printInt
+call printInt2
 
 push $nl
 push $2
@@ -210,6 +210,84 @@ strCpy:
 		ret
 		
 		
+printInt2:
+	//what if I do this:
+	//do this 8 times:
+	pop %rcx
+ 	//return thing
+	pop %rax
+	//number thing
+	push %rcx
+	//repeat 8 times
+	push %rax
+	push %rax
+	call printOffStackByte
+	pop %rax
+	shr $8, %rax
+
+	push %rax
+	push %rax
+	call printOffStackByte
+	pop %rax
+	shr $8, %rax
+
+	push %rax
+	push %rax
+	call printOffStackByte
+	pop %rax
+	shr $8, %rax
+
+	push %rax
+	push %rax
+	call printOffStackByte
+	pop %rax
+	shr $8, %rax
+
+	push %rax
+	push %rax
+	call printOffStackByte
+	pop %rax
+	shr $8, %rax
+
+	push %rax
+	push %rax
+	call printOffStackByte
+	pop %rax
+	shr $8, %rax
+
+	push %rax
+	push %rax
+	call printOffStackByte
+	pop %rax
+	shr $8, %rax
+
+	push %rax
+	call printOffStackByte
+
+	ret
+
+printOffStackByte:
+	//stack: xxxx 00 00 55 55 12 34 56 78 xxxx -->
+	//goes to the address, prints the byte.
+	pop %rcx
+	pop %rax
+	//popb????
+	push %rcx
+	//gotta be careful with the stack.
+	mov %al, %bl
+	shr $4, %al
+	shl $4, %bl
+	shr $4, %bl
+	//mask
+	movzx %al, %rax
+	movzx %bl, %rbx
+	push %rax
+	push $1
+	call print
+	push %rbx
+	push $1
+	call print
+	ret
 
 printInt:		#PRINTS AN INT base 16
 	mov 8(%rsp), %rax
