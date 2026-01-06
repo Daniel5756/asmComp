@@ -36,7 +36,8 @@ push $17
 push $test
 push $10
 call findVariable
-call printInt2
+push $10
+call print
 
 push $nl
 push $2
