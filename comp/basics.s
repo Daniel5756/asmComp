@@ -3,64 +3,59 @@
 	.text
 #============================================================
 	#FUNCTIONS GENERIC
-printInt:
-	#xx xx xx xx xx xx xx xx
+print2Bytes:
 	pop %rax
 	pop %rbx
 	push %rax
-	mov %rbx, %rdx
-	mov $0xF000000000000000, %rcx
-	printIntLoop:
-	mov %rdx, %rbx
-	and %rcx, %rbx
 
+	mov $0xF000, %rcx
+	and %rbx, %rcx
+	shr $12, %rcx
+	add $digs, %rcx
+	push %rbx
 	push %rcx
-	push %rdx
-	push %rbx
-	call cutZeroes
-	pop %rbx #HAS PTR
-	
-	add $digs, %rbx
-	
-	
-	push %rbx
 	push $1
 	call print
+	pop %rbx
 
-	pop %rdx
-	pop %rcx
+	mov $0x0F00, %rcx
+	and %rbx, %rcx
+	shr $8, %rcx
+	add $digs, %rcx
+	push %rbx
+	push %rcx
+	push $1
+	call print
+	pop %rbx
 
-			/*OK so I have fprgotten how to use assembly. I am slowly refiguring it out*/
-	shr $4,%rcx
-	cmp $0, %rcx
-	je printIntEnd
-	jmp printIntLoop
-	printIntEnd:
+	mov $0x00F0, %rcx
+	and %rbx, %rcx
+	shr $4, %rcx
+	add $digs, %rcx
+	push %rbx
+	push %rcx
+	push $1
+	call print
+	pop %rbx
+
+	mov $0x000F, %rcx
+	and %rbx, %rcx
+	add $digs, %rcx
+	push %rbx
+	push %rcx
+	push $1
+	call print
+	pop %rbx
+
 	ret
 
-
-cutZeroes:
+printInt:
 	pop %rax
 	pop %rbx
 	push %rax
-cutZeroesLoop:
-	#mov 1, %rcx
-	#and %rbx, %rcx
-	#RCX HAS MOD 2
 
-	mov %rbx, %rdx
-	shr $1, %rdx
-
-	cmp $0, %rdx
-	cmove %rdx, %rbx
-	jne cutZeroesLoop
-
-	cutZeroesEnd:
-	pop %rax
-	push %rbx
-	push %rax
-	ret
-
+	mov $0xFFFF000000000000, %rcx #CONTINUE HERE TO FINISH ALSO TEST THE OTHER THING
+	
 strCpy:
 	pop %rdx
 	pop %rcx
