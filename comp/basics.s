@@ -3,7 +3,7 @@
 	.text
 #============================================================
 	#FUNCTIONS GENERIC
-print2Bytes:
+printWord:
 	pop %rax
 	pop %rbx
 	push %rax
@@ -54,8 +54,39 @@ printInt:
 	pop %rbx
 	push %rax
 
-	mov $0xFFFF000000000000, %rcx #CONTINUE HERE TO FINISH ALSO TEST THE OTHER THING
-	
+	mov $0xFFFF000000000000, %rcx
+	and %rbx, %rcx
+	shr $48, %rcx
+	push %rbx
+	push %rcx
+	call printWord
+	pop %rbx
+
+	mov $0x0000FFFF00000000, %rcx
+	and %rbx, %rcx
+	shr $32, %rcx
+	push %rbx
+	push %rcx
+	call printWord
+	pop %rbx
+
+	mov $0x00000000FFFF0000, %rcx
+	and %rbx, %rcx
+	shr $16, %rcx
+	push %rbx
+	push %rcx
+	call printWord
+	pop %rbx
+
+	mov $0x000000000000FFFF, %rcx
+	and %rbx, %rcx
+	shr $0, %rcx
+	push %rbx
+	push %rcx
+	call printWord
+	pop %rbx
+
+	ret
 strCpy:
 	pop %rdx
 	pop %rcx
