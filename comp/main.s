@@ -4,11 +4,7 @@ thing: .asciz "lalala"
         .globl  _start
         .type   _start, @function
 _start:
-push %rsp
-call printInt
-
-call printnl
-
+#TEST FINDVAR
 push $thing
 push $6
 push $50
@@ -16,42 +12,22 @@ push $50
 push $digs
 push $9
 push $15
+
+push $5
+push $5
+push $5
 			# 11
-push $thing
-push $6
+push $digs
+push $8
 call findVariable
 call printInt
 
-
-
 call printnl
-			# F
 
 push $thing
-push $6
-call print
-
+call printInt
+call printnl
 push $digs
-push $9
-call findVariable
 call printInt
-
 call printnl
-
-push $digs
-push $10
-call findVariable
-call printInt
-
-call printnl
-
-pop %rax
-pop %rax
-pop %rax
-
-push %rsp
-call printInt
-
-call printnl
-
 jmp exit

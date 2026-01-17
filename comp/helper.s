@@ -1,4 +1,5 @@
 	.data
+	findVariableErrorMsg: .asciz "There requested variable does not exist. very sad. the program will end now."
 	.text
 
 
@@ -28,12 +29,15 @@ findVariable:
 	mov 16(%rsp), %rax	#pointer
 	mov 8(%rsp), %rbx	#len
 	mov %rsp, %rcx 	#counter
-	#add $24, %rcx
+	#sub $24, %rcx
 	findVarLoop:#IF VAR DOES NOT EXIST THERE IS SEG FAULT
 		add $24, %rcx		 #/*to define you push ptr, push len, push val*/
-		cmpq 8(%rcx), %rbx 	#len
+		cmp %rcx, %rbp
+		jle findVariableError
+
+		cmpq 8(%rcx), %rbx 	#len compare
 		jne findVarLoop
-		
+
 		push %rax
 		push %rbx
 		push %rcx
@@ -41,20 +45,23 @@ findVariable:
 		push 16(%rcx)
 		push %rax
 		push %rbx #len
-		push %rbx
 		call cmpString
-		
+
 		pop %rsi
-		
+
 		pop %rcx
 		pop %rbx
 		pop %rax
-		
+
 		cmpq $1, %rsi
 		je findVariableEnd
 		jmp findVarLoop
 	findVariableEnd:
-		mov 16(%rcx), %rax
-		#mov $103, %rax
+		mov (%rcx), %rax
 		mov %rax, 16(%rsp)
-		ret $16
+		ret $8
+	findVariableError:
+		push $findVariableErrorMsg
+		push $76
+		call print
+		jmp exit
