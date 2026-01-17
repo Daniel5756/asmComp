@@ -41,6 +41,7 @@ findVariable:
 		push 16(%rcx)
 		push %rax
 		push %rbx #len
+		push %rbx
 		call cmpString
 		
 		pop %rsi
@@ -53,10 +54,7 @@ findVariable:
 		je findVariableEnd
 		jmp findVarLoop
 	findVariableEnd:
-		push $10		#WTF?? why does it segfault without this??
-		call printInt	#
-		
 		mov 16(%rcx), %rax
 		#mov $103, %rax
-		mov %rax, 16(%rsi)
+		mov %rax, 16(%rsp)
 		ret $16

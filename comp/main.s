@@ -1,32 +1,57 @@
         .data
+thing: .asciz "lalala"
         .text
         .globl  _start
         .type   _start, @function
 _start:
-/*push %rsp
-call printInt2
-                        //diabolically confused
+push %rsp
+call printInt
+
+call printnl
+
+push $thing
+push $6
+push $50
+
 push $digs
-push $16
+push $9
+push $15
+			# 11
+push $thing
+push $6
+call findVariable
+call printInt
+
+
+
+call printnl
+			# F
+
+push $thing
+push $6
 call print
 
 push $digs
-push $10
-push $17
+push $9
+call findVariable
+call printInt
 
-push $test
+call printnl
+
+push $digs
 push $10
 call findVariable
-push $10
-call print
+call printInt
 
-push $nl
-push $2
-call print
+call printnl
+
+pop %rax
+pop %rax
+pop %rax
 
 push %rsp
 call printInt
-*/
-push $10
-call printInt
+
+call printnl
+
 jmp exit

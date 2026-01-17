@@ -3,6 +3,12 @@
 	.text
 #============================================================
 	#FUNCTIONS GENERIC
+printnl:
+	push $nl
+	push $1
+	call print
+	ret
+
 printWord:
 	pop %rax
 	pop %rbx
@@ -167,7 +173,27 @@ chrInStr:
 	#push %r8
 	ret $24
 
-cmpString:	#RECURSIVE
+cmpString:
+	mov 32(%rsp), %rax #pointer 1
+	mov 24(%rsp), %rbx #pointer 2
+	mov 16(%rsp), %rcx #length
+	mov 8(%rsp), %rdx #length
+
+	cmp %rcx, %rdx
+	je cmpStringexec
+	movq $0, 32(%rsp)
+	ret $24
+
+	cmpStringexec:
+	push %rax
+	push %rbx
+	push %rcx
+	call cmpStringHelper
+	pop %rax
+	mov %rax, 32(%rsp)
+	ret $24
+
+cmpStringHelper:	#RECURSIVE
 	mov 24(%rsp), %rax #pointer 1
 	mov 16(%rsp), %rbx #pointer 2
 	mov  8(%rsp), %rcx #length
@@ -188,7 +214,7 @@ cmpString:	#RECURSIVE
 	push %rax
 	push %rbx
 	push %rcx
-	call cmpString
+	call cmpStringHelper
 	pop %rdx
 
 	#repop
