@@ -29,11 +29,11 @@ findVariable:
 	mov 16(%rsp), %rax	#pointer
 	mov 8(%rsp), %rbx	#len
 	mov %rsp, %rcx 	#counter
-	#sub $24, %rcx
+	//sub $24, %rcx
 	findVarLoop:#IF VAR DOES NOT EXIST THERE IS SEG FAULT
 		add $24, %rcx		 #/*to define you push ptr, push len, push val*/
-		cmp %rcx, %rbp
-		jle findVariableError
+		//cmp %rcx, varStart
+		//jge findVariableError			I have no idea how to make the error system work... very sad... just get it right :)
 
 		cmpq 8(%rcx), %rbx 	#len compare
 		jne findVarLoop
@@ -48,10 +48,23 @@ findVariable:
 		call cmpString
 
 		pop %rsi
-
 		pop %rcx
 		pop %rbx
 		pop %rax
+
+/*
+		push %rsi		
+		call printInt		
+
+		call printnl		
+
+		push 16(%rcx)		
+		call printInt		
+
+		push 16(%rcx)		
+		push %rbx		
+		call print		
+*/
 
 		cmpq $1, %rsi
 		je findVariableEnd
