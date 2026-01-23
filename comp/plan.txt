@@ -1,0 +1,35 @@
+rough plan:
+i dont think ill be able to make errors a thing...
+
+
+keywords:
+int:
+	push name, namelen, val of currstack
+	print a push with value of 0 or whatever after '='
+
+arr:
+	push name, namelen, val of currstack
+	print sub
+
+fn:
+	print name
+	record the number of inputs
+	all functions return an int and need one op. or else...
+
+ret:
+	ret 8*in-1
+
+st:
+	idk this is bs.
+
+whl:
+
+if:
+
+else:
+
+no key word:
+evaluate() and that is a pain in the ass...
+
+evaluate:
+go from back and do pushey shit that I don't wanna think about right now :(
