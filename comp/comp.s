@@ -26,6 +26,8 @@ eval:	#RECURSIVE
 	ret
 def:
 	#nonono, push it to this stack: ptr, len type, ptr, len, type, ... then I can pop out when scope ends
+    call newScope?
+    
 	ret
 fn:
 	#add label and 
