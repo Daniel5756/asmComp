@@ -20,10 +20,52 @@ pushes base pointer. a { pushes r8 and moves the rsp to r8. a } squiggle ends th
 
 */
 eval:	#RECURSIVE
-	#mov $0, %rax #depth = 0
-	#for char: if '(' depth++ if ')' depth -- if ', ' and depth 0: push its stringiness and call recursively, if '/ /' ignore until next \n.
-	#the result of the evaluation is in the stack
+    pop %rax
+    pop %rbx //len
+    pop %rcx //ptr
+    push %rax
+    mov %rdx, %rcx
+    add %rdx, %rbx
+    sub %rdx, $1
+    evaloop:
+        cmp %rdx, $-1
+        je evalend
+        push %rax
+        push %rbx
+        push %rcx
+        push %rdx
+        cmpb (%rdx), '('
+        jne evaloopcontfn
+            push %rdx
+            call evalhelperfn
+        evaloopcontfn:
+        cmp (%rdx), ')'
+        jne evaloopcontvar
+        
+        evaloopcontvar:
+            
+        dec %rdx
 	ret
+evalhelperfn:
+    pop %rax
+    pop %rbx
+    push %rax
+    add(5, 4)
+    
+evalhelpervar:
+    
+    
+    
+    
+    
+evalhelpertypeofcharacter:
+    
+    
+    
+    
+    
+    
+    
 def:
 	#nonono, push it to this stack: ptr, len type, ptr, len, type, ... then I can pop out when scope ends
     call newScope?
