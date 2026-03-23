@@ -50,7 +50,7 @@ evalhelperfn:
     pop %rax
     pop %rbx
     push %rax
-    add(5, 4)
+    
     
 evalhelpervar:
     
